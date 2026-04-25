@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DevPulse</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 13.5px;
+  line-height: 1.55;
+  background: #f5f4f2;
+  color: #1a1a1a;
+  min-height: 100vh;
+}
+
+.shell { display: flex; min-height: 100vh; }
+
+.nav {
+  width: 200px; flex-shrink: 0;
+  background: #fff; border-right: 1px solid #e5e3df;
+  display: flex; flex-direction: column;
+  padding: 20px 0 24px;
+}
+.nav-brand {
+  padding: 0 18px 18px;
+  font-size: 15px; font-weight: 600; letter-spacing: -0.3px;
+  border-bottom: 1px solid #e5e3df; margin-bottom: 14px;
+}
+.nav-brand em { font-style: normal; color: #aaa; font-weight: 400; font-size: 12px; }
+.nav-section { padding: 0 18px 6px; font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: #c0bbb4; }
+.nav-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 18px; font-size: 13px; color: #555;
+  cursor: pointer; user-select: none; transition: background 0.1s, color 0.1s;
+}
+.nav-item:hover { background: #f5f4f2; color: #1a1a1a; }
+.nav-item.on { background: #f0ede8; color: #1a1a1a; font-weight: 500; }
+.nav-item svg { width: 13px; height: 13px; opacity: 0.55; flex-shrink: 0; }
+
+.devs { padding: 14px 0 0; }
+.dev-row {
+  display: flex; align-items: center; gap: 9px;
+  padding: 6px 18px; cursor: pointer; transition: background 0.1s;
+}
+.dev-row:hover { background: #f5f4f2; }
+.dev-row.on { background: #f0ede8; }
+.avi { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; flex-shrink: 0; }
+.dev-name { font-size: 12.5px; color: #444; }
+.dev-row.on .dev-name { color: #1a1a1a; font-weight: 500; }
+.dev-level { font-size: 10px; color: #bbb; }
+
+.nav-footer {
+  margin-top: auto; padding: 14px 18px 0;
+  border-top: 1px solid #e5e3df;
+}
+.leg { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; font-size: 11px; color: #999; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+.content { flex: 1; padding: 28px 36px; overflow: auto; }
+
+.page-head {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; margin-bottom: 22px;
+  gap: 12px; flex-wrap: wrap;
+}
+.dev-info { display: flex; align-items: center; gap: 12px; }
+.avi-lg { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+.dev-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.dev-sub { font-size: 12px; color: #999; margin-top: 2px; }
+
+.tag { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.tag-g { background: #eaf4ec; color: #2d7a42; }
+.tag-a { background: #fef3e2; color: #965c0f; }
+.tag-r { background: #fdecea; color: #c0392b; }
+
+.month-tabs { display: flex; gap: 4px; }
+.mtab {
+  padding: 6px 12px; border-radius: 6px;
+  border: 1px solid #e5e3df; background: #fff;
+  font-size: 12px; color: #888;
+  cursor: pointer; transition: all 0.12s;
+}
+.mtab:hover { border-color: #c5c1bb; color: #444; }
+.mtab.on { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+.metrics {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 10px; margin-bottom: 18px;
+}
+.mc {
+  background: #fff; border: 1px solid #e5e3df;
+  border-radius: 10px; padding: 14px 14px 12px; position: relative;
+}
+.mc-lbl { font-size: 10.5px; color: #aaa; margin-bottom: 8px; }
+.mc-val { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; line-height: 1; }
+.mc-unit { font-size: 10px; color: #ccc; margin-top: 4px; }
+.mc-trend { position: absolute; top: 12px; right: 12px; font-size: 10.5px; }
+.t-up { color: #c0392b; } .t-dn { color: #2d7a42; } .t-flat { color: #ccc; }
+
+.two-up { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.panel { background: #fff; border: 1px solid #e5e3df; border-radius: 10px; padding: 18px 20px; }
+.ptitle { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.7px; color: #c0bbb4; margin-bottom: 12px; }
+
+.interp { font-size: 13px; color: #444; line-height: 1.72; }
+
+.step { display: flex; gap: 10px; margin-bottom: 9px; }
+.step-n { width: 20px; height: 20px; border-radius: 50%; background: #f0ede8; color: #777; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.step-t { font-size: 12.5px; color: #444; line-height: 1.65; }
+
+.barrow { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+.bar-lbl { font-size: 11px; color: #aaa; width: 68px; flex-shrink: 0; }
+.bar-track { flex: 1; height: 5px; background: #f0ede8; border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; }
+.bar-val { font-size: 11px; color: #777; width: 30px; text-align: right; flex-shrink: 0; }
+
+.prev-label { margin: 12px 0 8px; font-size: 10px; color: #d0ccc7; letter-spacing: 0.5px; text-transform: uppercase; }
+
+.bug-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; background: #fafaf9; border: 1px solid #ece9e5; border-radius: 7px; margin-bottom: 7px; }
+.sev { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 3px; white-space: nowrap; }
+.sev-h { background: #fdecea; color: #c0392b; }
+.sev-m { background: #fef3e2; color: #965c0f; }
+.sev-l { background: #f0ede8; color: #888; }
+.bug-id { font-size: 11px; color: #ccc; margin-bottom: 3px; }
+.bug-cause { font-size: 12px; color: #666; }
+.no-bug { font-size: 12.5px; color: #2d7a42; padding: 4px 0; }
+
+.hist { background: #fff; border: 1px solid #e5e3df; border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+.hist table { width: 100%; border-collapse: collapse; }
+.hist th { text-align: left; padding: 10px 16px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: #c0bbb4; border-bottom: 1px solid #ece9e5; }
+.hist td { padding: 10px 16px; font-size: 12.5px; color: #444; border-bottom: 1px solid #f5f4f2; }
+.hist tr:last-child td { border-bottom: none; }
+.hist tr.dim td { opacity: 0.4; }
+
+.mgr-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 14px; }
+.mgr-card { background: #fff; border: 1px solid #e5e3df; border-radius: 10px; padding: 16px 18px; }
+.mgr-name { font-size: 13px; font-weight: 600; margin-bottom: 1px; }
+.mgr-team { font-size: 11px; color: #aaa; margin-bottom: 12px; }
+
+@media (max-width: 820px) {
+  .metrics { grid-template-columns: repeat(3, 1fr); }
+  .two-up { grid-template-columns: 1fr; }
+  .mgr-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const DEVS = [
+  { id:'DEV-001', name:'Ava Chen',    init:'AC', mgr:'Rina Kapoor',  team:'Payments API',  level:'SDE2', bg:'#e8eaf6', fg:'#5c6bc0' },
+  { id:'DEV-002', name:'Noah Patel',  init:'NP', mgr:'Rina Kapoor',  team:'Payments API',  level:'SDE1', bg:'#fce4ec', fg:'#c2185b' },
+  { id:'DEV-006', name:'Ishan Mehta', init:'IM', mgr:'Rina Kapoor',  team:'Payments API',  level:'SDE3', bg:'#e0f2f1', fg:'#00796b' },
+  { id:'DEV-003', name:'Mia Lopez',   init:'ML', mgr:'Samir Gupta',  team:'Checkout Web',  level:'SDE1', bg:'#fff3e0', fg:'#e65100' },
+  { id:'DEV-004', name:'Lucas Reed',  init:'LR', mgr:'Samir Gupta',  team:'Checkout Web',  level:'SDE2', bg:'#e8f5e9', fg:'#2e7d32' },
+  { id:'DEV-008', name:'Zara Khan',   init:'ZK', mgr:'Samir Gupta',  team:'Checkout Web',  level:'SDE1', bg:'#f3e5f5', fg:'#7b1fa2' },
+  { id:'DEV-005', name:'Emma Roy',    init:'ER', mgr:'Priya Nair',   team:'Mobile Growth', level:'SDE1', bg:'#e3f2fd', fg:'#1565c0' },
+  { id:'DEV-007', name:'Owen Brooks', init:'OB', mgr:'Priya Nair',   team:'Mobile Growth', level:'SDE2', bg:'#fbe9e7', fg:'#bf360c' },
+];
+
+const DATA = {
+  'DEV-001': { '2026-03':{ ct:3.95,lt:2.40,prs:2,dep:2,bug:0,  bugs:[],                                                                         pat:'Healthy flow' }, '2026-04':{ ct:3.90,lt:3.35,prs:2,dep:2,bug:0,  bugs:[],                                                                           pat:'Healthy flow'  } },
+  'DEV-002': { '2026-03':{ ct:5.90,lt:4.30,prs:2,dep:2,bug:0,  bugs:[],                                                                         pat:'Healthy flow' }, '2026-04':{ ct:5.40,lt:3.75,prs:2,dep:2,bug:50, bugs:[{id:'BUG-001',sev:'medium',cause:'Test coverage gap',   iss:'JIRA-007'}], pat:'Quality watch' } },
+  'DEV-006': { '2026-03':{ ct:3.75,lt:2.35,prs:2,dep:2,bug:0,  bugs:[],                                                                         pat:'Healthy flow' }, '2026-04':{ ct:3.70,lt:2.35,prs:2,dep:2,bug:50, bugs:[{id:'BUG-002',sev:'low',   cause:'Release config issue', iss:'JIRA-012'}], pat:'Quality watch' } },
+  'DEV-003': { '2026-03':{ ct:4.05,lt:3.85,prs:2,dep:2,bug:50, bugs:[{id:'BUG-004',sev:'medium',cause:'Edge case missed',      iss:'JIRA-013'}], pat:'Quality watch' }, '2026-04':{ ct:3.05,lt:3.55,prs:2,dep:2,bug:0,  bugs:[],                                                                           pat:'Healthy flow'  } },
+  'DEV-004': { '2026-03':{ ct:3.85,lt:2.10,prs:2,dep:2,bug:0,  bugs:[],                                                                         pat:'Healthy flow' }, '2026-04':{ ct:3.55,lt:2.90,prs:2,dep:2,bug:0,  bugs:[],                                                                           pat:'Healthy flow'  } },
+  'DEV-008': { '2026-03':{ ct:3.80,lt:3.15,prs:2,dep:2,bug:0,  bugs:[],                                                                         pat:'Healthy flow' }, '2026-04':{ ct:3.85,lt:3.40,prs:2,dep:2,bug:50, bugs:[{id:'BUG-003',sev:'high',  cause:'Edge case in checkout', iss:'JIRA-024'}], pat:'Quality watch' } },
+  'DEV-005': { '2026-03':{ ct:5.95,lt:4.95,prs:2,dep:2,bug:50, bugs:[{id:'BUG-005',sev:'medium',cause:'Test gap in push flow', iss:'JIRA-025'}], pat:'Quality watch' }, '2026-04':{ ct:6.50,lt:4.70,prs:2,dep:2,bug:0,  bugs:[],                                                                           pat:'Needs review'  } },
+  'DEV-007': { '2026-03':{ ct:4.55,lt:4.30,prs:2,dep:2,bug:50, bugs:[{id:'BUG-006',sev:'high',  cause:'Edge case post-release',iss:'JIRA-029'}], pat:'Quality watch' }, '2026-04':{ ct:4.80,lt:3.65,prs:2,dep:2,bug:0,  bugs:[],                                                                           pat:'Healthy flow'  } },
+};
+
+const MGR = [
+  { id:'MGR-01', name:'Rina Kapoor', team:'Payments API',  '2026-03':{ lt:3.02,ct:4.53,bug:0,  sig:'Healthy flow'       }, '2026-04':{ lt:3.15,ct:4.33,bug:33, sig:'Watch bottlenecks' } },
+  { id:'MGR-02', name:'Samir Gupta', team:'Checkout Web',  '2026-03':{ lt:3.03,ct:3.90,bug:17, sig:'Watch bottlenecks'  }, '2026-04':{ lt:3.28,ct:3.48,bug:17, sig:'Watch bottlenecks' } },
+  { id:'MGR-03', name:'Priya Nair',  team:'Mobile Growth', '2026-03':{ lt:4.63,ct:5.25,bug:50, sig:'Quality watch'      }, '2026-04':{ lt:4.18,ct:5.65,bug:0,  sig:'Healthy flow'      } },
+];
+
+const MONTHS = ['2026-03','2026-04'];
+const ML = { '2026-03':'Mar 2026', '2026-04':'Apr 2026' };
+
+function Tag({ p }) {
+  if (p === 'Healthy flow')      return <span className="tag tag-g">Healthy flow</span>;
+  if (p === 'Quality watch')     return <span className="tag tag-a">Quality watch</span>;
+  if (p === 'Needs review')      return <span className="tag tag-r">Needs review</span>;
+  if (p === 'Watch bottlenecks') return <span className="tag tag-a">Watch bottlenecks</span>;
+  return <span className="tag">{p}</span>;
+}
+
+function mc(key, val) {
+  if (key === 'ct')  return val <= 4 ? '#2d7a42' : val <= 6   ? '#965c0f' : '#c0392b';
+  if (key === 'lt')  return val <= 3 ? '#2d7a42' : val <= 4.5 ? '#965c0f' : '#c0392b';
+  if (key === 'bug') return val === 0 ? '#2d7a42' : val <= 33 ? '#965c0f' : '#c0392b';
+  return '#444';
+}
+
+function Bar({ label, val, max, color }) {
+  return (
+    <div className="barrow">
+      <span className="bar-lbl">{label}</span>
+      <div className="bar-track"><div className="bar-fill" style={{ width: Math.min(100,(val/max)*100)+'%', background: color }} /></div>
+      <span className="bar-val" style={{ color }}>{val}</span>
+    </div>
+  );
+}
+
+function interp(m) {
+  if (m.pat === 'Healthy flow')  return `Work is flowing well this month. Cycle time of ${m.ct}d and lead time of ${m.lt}d are both within a healthy range — no obvious bottlenecks in review or deployment. No escaped bugs either, which means the testing process is doing its job. A solid month overall.`;
+  if (m.pat === 'Quality watch') return `Speed metrics look acceptable — cycle time ${m.ct}d, lead time ${m.lt}d — but one bug reached production. Given only two issues shipped, that's a 50% bug rate. Worth investigating whether the test suite covered the affected path, and whether the ticket's acceptance criteria were clear enough before work started.`;
+  if (m.pat === 'Needs review')  return `Cycle time (${m.ct}d) is noticeably above average, which usually means work is stalling somewhere — often large PRs that take time to review, or tickets that grew in scope mid-sprint. Lead time (${m.lt}d) is also elevated. The priority is to find the one specific bottleneck rather than changing too many things at once.`;
+  return 'Review metrics with your manager this month.';
+}
+
+function nextSteps(m) {
+  if (m.pat === 'Healthy flow') return [
+    'Keep PR size manageable — smaller PRs get faster, higher-quality reviews.',
+    'Volunteer for cross-team code reviews to build visibility and breadth.',
+    'Consider picking up a more complex story next sprint to continue growing.',
+  ];
+  if (m.pat === 'Quality watch') return [
+    `Look into why ${m.bugs[0]?.cause || 'the bug'} wasn't caught before release and add a targeted test case.`,
+    'Before merging next PR, manually walk through edge cases in the changed paths.',
+    'Ask for clearer acceptance criteria on the next ticket before picking it up.',
+  ];
+  if (m.pat === 'Needs review') return [
+    'Break the next story into smaller sub-tasks that can each be reviewed in under two hours.',
+    'Pair with a senior dev early on if there\'s uncertainty about the approach.',
+    'Communicate scope changes to your manager before mid-sprint to avoid late delays.',
+  ];
+  return ['Monitor metrics over the next month and discuss with your manager.'];
+}
+
+function ICView({ dev, month, setMonth }) {
+  const m = DATA[dev.id][month];
+  const prev = month === '2026-04' ? DATA[dev.id]['2026-03'] : null;
+
+  function Trend({ cur, prv }) {
+    if (!prv) return null;
+    const d = parseFloat((cur - prv).toFixed(2));
+    if (Math.abs(d) < 0.05) return <span className="mc-trend t-flat">—</span>;
+    return d < 0
+      ? <span className="mc-trend t-dn">↓ {Math.abs(d)}</span>
+      : <span className="mc-trend t-up">↑ {d}</span>;
+  }
+
+  return (
+    <div>
+      <div className="page-head">
+        <div className="dev-info">
+          <div className="avi-lg" style={{ background: dev.bg, color: dev.fg }}>{dev.init}</div>
+          <div>
+            <div className="dev-title">{dev.name} <Tag p={m.pat} /></div>
+            <div className="dev-sub">{dev.level} · {dev.team} · Manager: {dev.mgr}</div>
+          </div>
+        </div>
+        <div className="month-tabs">
+          {MONTHS.map(mo => <div key={mo} className={`mtab${month===mo?' on':''}`} onClick={() => setMonth(mo)}>{ML[mo]}</div>)}
+        </div>
+      </div>
+
+      <div className="metrics">
+        <div className="mc">
+          <Trend cur={m.ct} prv={prev?.ct} />
+          <div className="mc-lbl">Cycle time</div>
+          <div className="mc-val" style={{ color: mc('ct', m.ct) }}>{m.ct}</div>
+          <div className="mc-unit">days avg</div>
+        </div>
+        <div className="mc">
+          <Trend cur={m.lt} prv={prev?.lt} />
+          <div className="mc-lbl">Lead time</div>
+          <div className="mc-val" style={{ color: mc('lt', m.lt) }}>{m.lt}</div>
+          <div className="mc-unit">days avg</div>
+        </div>
+        <div className="mc">
+          <div className="mc-lbl">PRs merged</div>
+          <div className="mc-val" style={{ color:'#444' }}>{m.prs}</div>
+          <div className="mc-unit">this month</div>
+        </div>
+        <div className="mc">
+          <div className="mc-lbl">Deployments</div>
+          <div className="mc-val" style={{ color:'#444' }}>{m.dep}</div>
+          <div className="mc-unit">to prod</div>
+        </div>
+        <div className="mc">
+          <div className="mc-lbl">Bug rate</div>
+          <div className="mc-val" style={{ color: mc('bug', m.bug) }}>{m.bug}%</div>
+          <div className="mc-unit">escaped bugs</div>
+        </div>
+      </div>
+
+      <div className="two-up">
+        <div className="panel">
+          <div className="ptitle">What's happening</div>
+          <p className="interp">{interp(m)}</p>
+        </div>
+        <div className="panel">
+          <div className="ptitle">Suggested next steps</div>
+          {nextSteps(m).map((s,i) => (
+            <div className="step" key={i}>
+              <div className="step-n">{i+1}</div>
+              <div className="step-t">{s}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="two-up">
+        <div className="panel">
+          <div className="ptitle">Speed profile</div>
+          <Bar label="Cycle time" val={m.ct} max={8} color={mc('ct', m.ct)} />
+          <Bar label="Lead time"  val={m.lt} max={8} color={mc('lt', m.lt)} />
+          {prev && <>
+            <div className="prev-label">Previous month</div>
+            <Bar label="Cycle time" val={prev.ct} max={8} color="#d9d6d1" />
+            <Bar label="Lead time"  val={prev.lt} max={8} color="#d9d6d1" />
+          </>}
+        </div>
+        <div className="panel">
+          <div className="ptitle">Escaped bugs</div>
+          {m.bugs.length === 0
+            ? <div className="no-bug">No bugs escaped to production this month.</div>
+            : m.bugs.map(b => (
+              <div className="bug-item" key={b.id}>
+                <div>
+                  <div className="bug-id">{b.id} · {b.iss}</div>
+                  <div style={{ display:'flex', gap:6, alignItems:'center', marginTop:2 }}>
+                    <span className={`sev sev-${b.sev[0]}`}>{b.sev}</span>
+                    <span className="bug-cause">{b.cause}</span>
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <div className="hist">
+        <table>
+          <thead>
+            <tr>
+              <th>Month</th><th>Cycle time</th><th>Lead time</th>
+              <th>PRs merged</th><th>Deployments</th><th>Bug rate</th><th>Pattern</th>
+            </tr>
+          </thead>
+          <tbody>
+            {MONTHS.map(mo => {
+              const r = DATA[dev.id][mo];
+              return (
+                <tr key={mo} className={mo !== month ? 'dim' : ''}>
+                  <td>{ML[mo]}</td>
+                  <td style={{ color: mc('ct', r.ct) }}>{r.ct}d</td>
+                  <td style={{ color: mc('lt', r.lt) }}>{r.lt}d</td>
+                  <td>{r.prs}</td><td>{r.dep}</td>
+                  <td style={{ color: mc('bug', r.bug) }}>{r.bug}%</td>
+                  <td><Tag p={r.pat} /></td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function MgrView({ month, setMonth }) {
+  return (
+    <div>
+      <div className="page-head">
+        <div>
+          <div className="dev-title">Manager summary</div>
+          <div className="dev-sub">Team-level aggregates · {ML[month]}</div>
+        </div>
+        <div className="month-tabs">
+          {MONTHS.map(mo => <div key={mo} className={`mtab${month===mo?' on':''}`} onClick={() => setMonth(mo)}>{ML[mo]}</div>)}
+        </div>
+      </div>
+
+      <div className="mgr-grid">
+        {MGR.map(mgr => {
+          const r = mgr[month];
+          return (
+            <div className="mgr-card" key={mgr.id}>
+              <div className="mgr-name">{mgr.name}</div>
+              <div className="mgr-team">{mgr.team}</div>
+              <Tag p={r.sig} />
+              <div style={{ marginTop:14 }}>
+                <Bar label="Lead time"  val={+r.lt.toFixed(1)} max={7} color={mc('lt', r.lt)} />
+                <Bar label="Cycle time" val={+r.ct.toFixed(1)} max={7} color={mc('ct', r.ct)} />
+                <Bar label="Bug rate %"  val={Math.round(r.bug)} max={60} color={mc('bug', r.bug)} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="hist">
+        <table>
+          <thead>
+            <tr><th>Manager</th><th>Team</th><th>Avg lead time</th><th>Avg cycle time</th><th>Avg bug rate</th><th>Signal</th></tr>
+          </thead>
+          <tbody>
+            {MGR.map(mgr => {
+              const r = mgr[month];
+              return (
+                <tr key={mgr.id}>
+                  <td style={{ fontWeight:500 }}>{mgr.name}</td>
+                  <td style={{ color:'#999' }}>{mgr.team}</td>
+                  <td style={{ color: mc('lt', r.lt) }}>{r.lt.toFixed(1)}d</td>
+                  <td style={{ color: mc('ct', r.ct) }}>{r.ct.toFixed(1)}d</td>
+                  <td style={{ color: mc('bug', r.bug) }}>{Math.round(r.bug)}%</td>
+                  <td><Tag p={r.sig} /></td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [view, setView] = React.useState('ic');
+  const [devId, setDevId] = React.useState('DEV-001');
+  const [month, setMonth] = React.useState('2026-04');
+  const dev = DEVS.find(d => d.id === devId);
+
+  return (
+    <div className="shell">
+      <nav className="nav">
+        <div className="nav-brand">DevPulse <em>beta</em></div>
+
+        <div className="nav-section">Views</div>
+        <div className={`nav-item${view==='ic'?' on':''}`} onClick={() => setView('ic')}>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+          IC profile
+        </div>
+        <div className={`nav-item${view==='mgr'?' on':''}`} onClick={() => setView('mgr')}>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+          Manager view
+        </div>
+
+        {view === 'ic' && <>
+          <div className="devs">
+            <div className="nav-section" style={{ marginTop:12 }}>Developers</div>
+            {DEVS.map(d => (
+              <div key={d.id} className={`dev-row${devId===d.id?' on':''}`} onClick={() => setDevId(d.id)}>
+                <div className="avi" style={{ background:d.bg, color:d.fg }}>{d.init}</div>
+                <div>
+                  <div className="dev-name">{d.name}</div>
+                  <div className="dev-level">{d.level}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>}
+
+        <div className="nav-footer">
+          <div style={{ fontSize:10, color:'#ccc', marginBottom:8, letterSpacing:'0.5px', textTransform:'uppercase' }}>Legend</div>
+          <div className="leg"><div className="dot" style={{ background:'#2d7a42' }}/>Healthy</div>
+          <div className="leg"><div className="dot" style={{ background:'#965c0f' }}/>Needs attention</div>
+          <div className="leg"><div className="dot" style={{ background:'#c0392b' }}/>Action required</div>
+        </div>
+      </nav>
+
+      <main className="content">
+        {view === 'ic'
+          ? <ICView dev={dev} month={month} setMonth={setMonth} />
+          : <MgrView month={month} setMonth={setMonth} />
+        }
+      </main>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
