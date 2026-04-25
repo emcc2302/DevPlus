@@ -210,15 +210,15 @@ function Bar({ label, val, max, color }) {
 }
 
 function interp(m) {
-  if (m.pat === 'Healthy flow')  return `Work is flowing well this month. Cycle time of ${m.ct}d and lead time of ${m.lt}d are both within a healthy range — no obvious bottlenecks in review or deployment. No escaped bugs either, which means the testing process is doing its job. A solid month overall.`;
-  if (m.pat === 'Quality watch') return `Speed metrics look acceptable — cycle time ${m.ct}d, lead time ${m.lt}d — but one bug reached production. Given only two issues shipped, that's a 50% bug rate. Worth investigating whether the test suite covered the affected path, and whether the ticket's acceptance criteria were clear enough before work started.`;
-  if (m.pat === 'Needs review')  return `Cycle time (${m.ct}d) is noticeably above average, which usually means work is stalling somewhere — often large PRs that take time to review, or tickets that grew in scope mid-sprint. Lead time (${m.lt}d) is also elevated. The priority is to find the one specific bottleneck rather than changing too many things at once.`;
+  if (m.pat === 'Healthy flow')  return `Work is flowing well this month. Cycle time of ${m.ct}d and lead time of ${m.lt}d are both within a healthy range no obvious bottlenecks in review or deployment. No escaped bugs either, which means the testing process is doing its job. A solid month overall.`;
+  if (m.pat === 'Quality watch') return `Speed metrics look acceptable cycle time ${m.ct}d, lead time ${m.lt}d but one bug reached production. Given only two issues shipped, that's a 50% bug rate. Worth investigating whether the test suite covered the affected path, and whether the ticket's acceptance criteria were clear enough before work started.`;
+  if (m.pat === 'Needs review')  return `Cycle time (${m.ct}d) is noticeably above average, which usually means work is stalling somewhere often large PRs that take time to review, or tickets that grew in scope mid-sprint. Lead time (${m.lt}d) is also elevated. The priority is to find the one specific bottleneck rather than changing too many things at once.`;
   return 'Review metrics with your manager this month.';
 }
 
 function nextSteps(m) {
   if (m.pat === 'Healthy flow') return [
-    'Keep PR size manageable — smaller PRs get faster, higher-quality reviews.',
+    'Keep PR size manageable smaller PRs get faster, higher-quality reviews.',
     'Volunteer for cross-team code reviews to build visibility and breadth.',
     'Consider picking up a more complex story next sprint to continue growing.',
   ];
